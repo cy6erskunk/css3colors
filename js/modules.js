@@ -1,34 +1,36 @@
 (function() {
- // # Search for closest human-readable color
+// # Search for closest human-readable color
 // Two modes are available:
 //
-// - basic css with 16 colors
-// - extended css3 mode with 147 (X11) colors
+//  - basic css with 16 colors
+//  - extended css3 mode with 147 (X11) colors (138 + 9 synonyms)
 
 /*global module:false,window:false*/
-
-// ## `distance`
+// namespace `FC` i.e. FindColor
+var FC = {};
+// ## `FC.distance`
 // Searches for closest color in basic CSS1 color list
 // or in extended CSS3 color list.
 //
 // Returns object like
 // `{'name':'black', 'value' : [0,0,0]}`
 // where
+//
 //   - `name` is css-name of the color
 //   - `value` is array of color RGB components
 //
 //  exports single function
 //  findColor (color, extended)
 //
-var distance = function (a, b) {
+FC.distance = function (a, b) {
     var result = 0;
     for (var i = 0; i < 3; i++) {
         result += Math.abs(a[i] - b[i]);
     }
     return Math.pow(result, 1/3);
 };
-// `basicColors` array contains definitions of 16 basic colors
-var basicColors = [
+// `FC.basicColors` array contains definitions of 16 basic colors
+FC.basicColors = [
     {'name':'black', 'value' : [0,0,0]},
     {'name':'silver', 'value' : [192,192,192]},
     {'name':'gray', 'value' : [128,128,128]},
@@ -46,11 +48,11 @@ var basicColors = [
     {'name':'teal', 'value' : [0,128,128]},
     {'name':'aqua', 'value' : [0,255,255]}
 ];
-// `extendedColors` array contains definitions of 147 extended css3 colors
-var extendedColors = [
+// `FC.extendedColors` array contains definitions of 147 extended css3 colors
+FC.extendedColors = [
     {'name':'aliceblue', 'value' : [240,248,255]},
     {'name':'antiquewhite', 'value' : [250,235,215]},
-    {'name':'aqua', 'value' : [0,255,255]},
+    // {'name':'aqua', 'value' : [0,255,255]},  // see 'cyan'
     {'name':'aquamarine', 'value' : [127,255,212]},
     {'name':'azure', 'value' : [240,255,255]},
     {'name':'beige', 'value' : [245,245,220]},
@@ -74,7 +76,7 @@ var extendedColors = [
     {'name':'darkgoldenrod', 'value' : [184,134,11]},
     {'name':'darkgray', 'value' : [169,169,169]},
     {'name':'darkgreen', 'value' : [0,100,0]},
-    {'name':'darkgrey', 'value' : [169,169,169]},
+    // {'name':'darkgrey', 'value' : [169,169,169]}, // see 'darkgray'
     {'name':'darkkhaki', 'value' : [189,183,107]},
     {'name':'darkmagenta', 'value' : [139,0,139]},
     {'name':'darkolivegreen', 'value' : [85,107,47]},
@@ -85,18 +87,18 @@ var extendedColors = [
     {'name':'darkseagreen', 'value' : [143,188,143]},
     {'name':'darkslateblue', 'value' : [72,61,139]},
     {'name':'darkslategray', 'value' : [47,79,79]},
-    {'name':'darkslategrey', 'value' : [47,79,79]},
+    // {'name':'darkslategrey', 'value' : [47,79,79]}, see 'darkslategray'
     {'name':'darkturquoise', 'value' : [0,206,209]},
     {'name':'darkviolet', 'value' : [148,0,211]},
     {'name':'deeppink', 'value' : [255,20,147]},
     {'name':'deepskyblue', 'value' : [0,191,255]},
     {'name':'dimgray', 'value' : [105,105,105]},
-    {'name':'dimgrey', 'value' : [105,105,105]},
+    // {'name':'dimgrey', 'value' : [105,105,105]},
     {'name':'dodgerblue', 'value' : [30,144,255]},
     {'name':'firebrick', 'value' : [178,34,34]},
     {'name':'floralwhite', 'value' : [255,250,240]},
     {'name':'forestgreen', 'value' : [34,139,34]},
-    {'name':'fuchsia', 'value' : [255,0,255]},
+    // {'name':'fuchsia', 'value' : [255,0,255]}, // see 'magenta'
     {'name':'gainsboro', 'value' : [220,220,220]},
     {'name':'ghostwhite', 'value' : [248,248,255]},
     {'name':'gold', 'value' : [255,215,0]},
@@ -104,7 +106,7 @@ var extendedColors = [
     {'name':'gray', 'value' : [128,128,128]},
     {'name':'green', 'value' : [0,128,0]},
     {'name':'greenyellow', 'value' : [173,255,47]},
-    {'name':'grey', 'value' : [128,128,128]},
+    // {'name':'grey', 'value' : [128,128,128]}, // see 'gray'
     {'name':'honeydew', 'value' : [240,255,240]},
     {'name':'hotpink', 'value' : [255,105,180]},
     {'name':'indianred', 'value' : [205,92,92]},
@@ -121,13 +123,13 @@ var extendedColors = [
     {'name':'lightgoldenrodyellow', 'value' : [250,250,210]},
     {'name':'lightgray', 'value' : [211,211,211]},
     {'name':'lightgreen', 'value' : [144,238,144]},
-    {'name':'lightgrey', 'value' : [211,211,211]},
+    // {'name':'lightgrey', 'value' : [211,211,211]}, // see 'lightgray'
     {'name':'lightpink', 'value' : [255,182,193]},
     {'name':'lightsalmon', 'value' : [255,160,122]},
     {'name':'lightseagreen', 'value' : [32,178,170]},
     {'name':'lightskyblue', 'value' : [135,206,250]},
     {'name':'lightslategray', 'value' : [119,136,153]},
-    {'name':'lightslategrey', 'value' : [119,136,153]},
+    // {'name':'lightslategrey', 'value' : [119,136,153]}, // see 'lightslategray'
     {'name':'lightsteelblue', 'value' : [176,196,222]},
     {'name':'lightyellow', 'value' : [255,255,224]},
     {'name':'lime', 'value' : [0,255,0]},
@@ -180,7 +182,7 @@ var extendedColors = [
     {'name':'skyblue', 'value' : [135,206,235]},
     {'name':'slateblue', 'value' : [106,90,205]},
     {'name':'slategray', 'value' : [112,128,144]},
-    {'name':'slategrey', 'value' : [112,128,144]},
+    // {'name':'slategrey', 'value' : [112,128,144]}, // see 'slategray'
     {'name':'snow', 'value' : [255,250,250]},
     {'name':'springgreen', 'value' : [0,255,127]},
     {'name':'steelblue', 'value' : [70,130,180]},
@@ -198,34 +200,39 @@ var extendedColors = [
 ];
 
 //
-// ###`find`
+// ## `FC.find`
 // Finds closest to the given color from color array
 //
 //  - @param  {Array} color 3 decimal componets of color array
 //  - @param  {Array} colors Array of 3 decimal componenets of color
 //  - @return {Array} [R decimal, G decimal, B decimal]
 //
-var find = function (color, colors) {
+FC.find = function (color, colors) {
     return (colors.reduce(function(prevVal, curVal) {
-        var curDist = distance(color, curVal.value);
+        var curDist = FC.distance(color, curVal.value);
         return curDist < prevVal.distance ? {'distance':curDist, 'o' : curVal} : prevVal;
     }, {'distance': Infinity, 'o': null})).o;
 };
 
-//
+// ## `FC.findColor`
 // Searches for closest color in CSS1 or CSS3 color list.
 //
 // + @param  {array} color - RGB components
 // + @param  {boolean} extended - use CSS1 (false, default) or CSS3
 // + @return {object} - described in module definition
 //
-var findColor = function (color, extended) {
-    return extended ? find(color, extendedColors) : find(color, basicColors);
+FC.findColor = function (color, extended) {
+    if (color && Object.prototype.toString.call(color) === '[object Array]' && color.length === 3) {
+        return extended ? FC.find(color, FC.extendedColors) : FC.find(color, FC.basicColors);
+    }
 };
-
+// ## Bind `findColor` to global object
+// In Node environment everything is private, except to exported objexts
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports.findColor = findColor; // node.js
+    module.exports.findColor = FC.findColor; // node.js
+// In browser environment this code should be wrapped
+// with closure otherwise `FC` object will leak to to `window`
 } else {
-    window.findColor = findColor; // browser global
+    window.findColor = FC.findColor; // browser global
 }
- })();
+})();

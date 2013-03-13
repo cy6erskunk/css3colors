@@ -58,8 +58,8 @@ module.exports = function (grunt) {
             }
         },
         jasmine: {
-            pivotal: {
-                src: 'src/**/*.js',
+            findColor: {
+                src: 'src/js/modules/findColor.js',
                 options: {
                     specs: 'spec/*Spec.js',
                     helpers: 'spec/*Helper.js'
