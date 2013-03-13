@@ -47,7 +47,7 @@
             }
         },
         processInput = function () {
-            var userColor = (/^\[.*\]$/).test(this.value) && JSON.parse(this.value),
+            var userColor = (/^\[\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\]$/).test(this.value) && JSON.parse(this.value),
                 css3ColorObj;
 
             if (Object.prototype.toString.call(userColor) === '[object Array]' && userColor.length === 3) {
