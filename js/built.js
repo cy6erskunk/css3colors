@@ -1,19 +1,19 @@
-/* global PrefixFree:false,findColor:false*/
+/* global PrefixFree:false,findColor:false,$:false*/
 (function() {
-    var dQS = function (selector) { return document.querySelector(selector); },
-        input = dQS('input.input'),
-        nameElem = dQS('.colorName'),
-        valueElem = dQS('.colorValue'),
-        css3ColorElem = dQS('.css3color'),
-        customColorElem = dQS('.customColor'),
-        allText = Array.prototype.slice.call(document.querySelectorAll('.text')),
-        body = dQS('body'),
+    window.$ = window.domey;
+    var input = $('input.input'),
+        nameElem = $('.colorName'),
+        valueElem = $('.colorValue'),
+        css3ColorElem = $('.css3color'),
+        customColorElem = $('.customColor'),
+        allText = $('.text'),
+        body = $('body'),
         prefix = PrefixFree.prefix,
         invertNotSupported = (function () {
-            if (body.style[prefix+'filter']) {
-                body.style[prefix+'filter'] = 'invert(100%)';
-                if (body.style[prefix+'filter'] === 'invert(100%)') {
-                    body.style[prefix+'filter'] = '';
+            if (body.css(prefix+'filter')) {
+                body.css(prefix+'filter', 'invert(100%)');
+                if (body.css(prefix+'filter') === 'invert(100%)') {
+                    body.css(prefix+'filter', '');
                     return false;
                 }
             }
@@ -22,54 +22,37 @@
         arr2rgb = function (arr) {
             return 'rgb(' + arr.toString() + ')';
         },
-        css = function (nodes, field, value) {
-            var result,
-                processSingleNode = function (node) {
-                    if (typeof value !== 'undefined') {
-                        node.style[field] = value;
-                    } else {
-                        result = node.style[field];
-                    }
-                };
-
-            // return value for the first node
-            if (typeof value === 'undefined') {
-                processSingleNode(nodes.length ? nodes[0] : nodes);
-                return result;
-            // set value to all nodes
-            } else {
-                if (typeof nodes.length === 'undefined') {
-                    nodes = [nodes];
-                }
-                nodes.forEach(function (node) {
-                    processSingleNode(node);
-                });
-            }
+        isArray = function (a) {
+            return Object.prototype.toString.call(a) === '[object Array]';
         },
         processInput = function () {
-            var userColor = (/^\[\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\]$/).test(this.value) && JSON.parse(this.value),
+            var userColor = (/^\[\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\]$/).test(this[0].value) && JSON.parse(this[0].value),
                 css3ColorObj;
 
-            if (Object.prototype.toString.call(userColor) === '[object Array]' && userColor.length === 3) {
+            if (isArray(userColor) && userColor.length === 3) {
                 css3ColorObj = findColor(userColor);
                 css3ColorObj.strValue = JSON.stringify(css3ColorObj.value);
                 css3ColorObj.rgbValue = arr2rgb(css3ColorObj.value);
 
-                nameElem.innerHTML = css3ColorObj.name;
-                valueElem.innerHTML = css3ColorObj.strValue;
+                nameElem[0].innerHTML = css3ColorObj.name;
+                valueElem[0].innerHTML = css3ColorObj.strValue;
 
-                css(allText, 'color', arr2rgb(invertColor(css3ColorObj.value)));
+                allText.css('color', arr2rgb(invertColor(css3ColorObj.value)));
 
-                css(customColorElem, 'backgroundColor', arr2rgb(userColor));
-                css(customColorElem, 'color', arr2rgb(invertColor(userColor)));
+                customColorElem.css({
+                    'backgroundColor' : arr2rgb(userColor),
+                    'color' : arr2rgb(invertColor(userColor))
+                });
 
-                css(css3ColorElem, 'backgroundColor', css3ColorObj.rgbValue);
-                css(css3ColorElem, 'color', arr2rgb(invertColor(css3ColorObj.value)));
+                css3ColorElem.css({
+                    'backgroundColor' : css3ColorObj.rgbValue,
+                    'color' : arr2rgb(invertColor(css3ColorObj.value))
+                });
             }
         },
         invertColor = function (a) {
             var res = [];
-            if (Object.prototype.toString.call(a) === '[object Array]' && a.length === 3) {
+            if (isArray(a) && a.length === 3) {
                 a.forEach(function (v) {
                     // slightly darken value too close to 127
                     Math.abs(v - 127) < 10 ?
@@ -87,10 +70,10 @@
                 initial.push(Math.ceil(Math.random() * 256));
             }
 
-            input.value = '[' + initial.toString() + ']';
+            input[0].value = '[' + initial.toString() + ']';
             processInput.call(input);
 
-            input.addEventListener('input', processInput);
+            input[0].addEventListener('input', processInput);
         };
 
     init();
