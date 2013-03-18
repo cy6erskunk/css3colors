@@ -1,4 +1,4 @@
-/* global PrefixFree:false,findColor:false,$:false*/
+/* global findColor:false,$:false*/
 (function() {
     window.$ = window.domey;
     var input = $('input.input'),
@@ -7,18 +7,6 @@
         css3ColorElem = $('.css3color'),
         customColorElem = $('.customColor'),
         allText = $('.text'),
-        body = $('body'),
-        prefix = PrefixFree.prefix,
-        invertNotSupported = (function () {
-            if (body.css(prefix+'filter')) {
-                body.css(prefix+'filter', 'invert(100%)');
-                if (body.css(prefix+'filter') === 'invert(100%)') {
-                    body.css(prefix+'filter', '');
-                    return false;
-                }
-            }
-            return true;
-        })(),
         arr2rgb = function (arr) {
             return 'rgb(' + arr.toString() + ')';
         },
