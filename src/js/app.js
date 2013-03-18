@@ -26,7 +26,7 @@
             return Object.prototype.toString.call(a) === '[object Array]';
         },
         processInput = function () {
-            var userColor = (/^\[\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\]$/).test(this[0].value) && JSON.parse(this[0].value),
+            var userColor = (/^\[\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\]$/).test(this.value) && JSON.parse(this.value),
                 css3ColorObj;
 
             if (isArray(userColor) && userColor.length === 3) {
@@ -71,7 +71,7 @@
             }
 
             input[0].value = '[' + initial.toString() + ']';
-            processInput.call(input);
+            processInput.call(input[0]);
 
             input[0].addEventListener('input', processInput);
         };
