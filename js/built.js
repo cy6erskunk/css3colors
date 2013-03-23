@@ -14,28 +14,53 @@
             return Object.prototype.toString.call(a) === '[object Array]';
         },
         processInput = function () {
-            var userColor = (/^\[\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\]$/).test(this.value) && JSON.parse(this.value),
+            var userColorValueRe = new RegExp('^\\[\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\]$'),
+                userColorNameRe = new RegExp('^[a-z]+$', 'i'),
+                userColor = userColorNameRe.test(this.value) && this.value ||
+                            userColorValueRe.test(this.value) && JSON.parse(this.value),
                 css3ColorObj;
 
-            if (isArray(userColor) && userColor.length === 3) {
-                css3ColorObj = findColor(userColor);
-                css3ColorObj.strValue = JSON.stringify(css3ColorObj.value);
-                css3ColorObj.rgbValue = arr2rgb(css3ColorObj.value);
+            if (typeof userColor === 'string' || isArray(userColor) && userColor.length === 3) {
+                css3ColorObj = findColor(userColor,1);
+                if (css3ColorObj) {
+                    // @TODO fix this tricky logic
+                    customColorElem[0].className = 'customColor'; // @TODO refactor
 
-                nameElem[0].innerHTML = css3ColorObj.name;
-                valueElem[0].innerHTML = css3ColorObj.strValue;
+                    css3ColorObj.strValue = JSON.stringify(css3ColorObj.value);
+                    css3ColorObj.rgbValue = arr2rgb(css3ColorObj.value);
 
-                allText.css('color', arr2rgb(invertColor(css3ColorObj.value)));
+                    nameElem[0].innerHTML = css3ColorObj.name;
+                    valueElem[0].innerHTML = css3ColorObj.strValue;
 
-                customColorElem.css({
-                    'backgroundColor' : arr2rgb(userColor),
-                    'color' : arr2rgb(invertColor(userColor))
-                });
+                    allText.css('color', arr2rgb(invertColor(css3ColorObj.value)));
 
-                css3ColorElem.css({
-                    'backgroundColor' : css3ColorObj.rgbValue,
-                    'color' : arr2rgb(invertColor(css3ColorObj.value))
-                });
+                    // @TODO fix this tricky logic
+                    if (typeof userColor === 'string') {
+                        userColor = css3ColorObj.value;
+                    }
+
+                    customColorElem.css({
+                        'backgroundColor' : arr2rgb(userColor),
+                        'color' : arr2rgb(invertColor(userColor))
+                    });
+
+                    css3ColorElem.css({
+                        'backgroundColor' : css3ColorObj.rgbValue,
+                        'color' : arr2rgb(invertColor(css3ColorObj.value))
+                    });
+                } else {
+                    customColorElem[0].className = 'customColor transparent-bg';
+                    customColorElem[0].css = '';
+                }
+            } else { // @TODO refactor this copy-paste
+                customColorElem[0].className = 'customColor transparent-bg';
+                customColorElem[0].css = '';
+            }
+        },
+        processBlur = function () {
+            if (!this.value) {
+                this.value = nameElem[0].innerHTML;
+                processInput.call(this);
             }
         },
         invertColor = function (a) {
@@ -62,6 +87,7 @@
             processInput.call(input[0]);
 
             input[0].addEventListener('input', processInput);
+            input[0].addEventListener('blur', processBlur);
         };
 
     init();

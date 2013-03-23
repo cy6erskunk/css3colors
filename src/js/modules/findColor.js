@@ -202,15 +202,31 @@ FC.extendedColors = [
 // ## `FC.find`
 // Finds closest to the given color from color array
 //
-//  - @param  {Array} color 3 decimal componets of color array
-//  - @param  {Array} colors Array of 3 decimal componenets of color
-//  - @return {Array} [R decimal, G decimal, B decimal]
+//  - @param   {Array} color 3 decimal componets of color array
+//  - @param   {Array} colors Array of 3 decimal componenets of color
+//  - @returns {Object|Array|null} color object
 //
 FC.find = function (color, colors) {
-    return (colors.reduce(function(prevVal, curVal) {
+    var result = (colors.reduce(function(prevVal, curVal) {
         var curDist = FC.distance(color, curVal.value);
         return curDist < prevVal.distance ? {'distance':curDist, 'o' : curVal} : prevVal;
     }, {'distance': Infinity, 'o': null})).o;
+    return result ? result : null;
+};
+
+//
+// ## `FC.findByName`
+// Finds color with given color name  in color array
+//
+//  - @param   {String} colorName
+//  - @param   {Array} colors Array of 3 decimal componenets of color
+//  - @returns {Object|null} color object
+//
+FC.findByName = function (colorName, colors) {
+    var result = colors.filter(function (elem) {
+        return elem.name === colorName.toLowerCase();
+    });
+    return (result.length === 1) ? result[0] : null;
 };
 
 // ## `FC.findColor`
@@ -218,12 +234,15 @@ FC.find = function (color, colors) {
 //
 // + @param  {array} color - RGB components
 // + @param  {boolean} extended - use CSS1 (false, default) or CSS3
-// + @return {object} - described in module definition
+// + @return {object|null} - described in module definition
 //
 FC.findColor = function (color, extended) {
     if (color && Object.prototype.toString.call(color) === '[object Array]' && color.length === 3) {
         return extended ? FC.find(color, FC.extendedColors) : FC.find(color, FC.basicColors);
+    } else if (typeof color === 'string') {
+        return extended ?  FC.findByName(color, FC.extendedColors) : FC.findByName(color, FC.basicColors);
     }
+    return null;
 };
 // ## Bind `findColor` to global object
 // In Node environment everything is private, except to exported objexts

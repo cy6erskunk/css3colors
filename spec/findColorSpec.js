@@ -11,15 +11,22 @@ describe('findColor', function () {
             });
         });
 
-        it('returns undefined if input given is not array of color components', function () {
-            expect(findColor()).toBeUndefined();
-            expect(findColor('')).toBeUndefined();
-            expect(findColor(1)).toBeUndefined();
-            expect(findColor([])).toBeUndefined();
-            expect(findColor({})).toBeUndefined();
-            expect(findColor([1])).toBeUndefined();
-            expect(findColor([1,2])).toBeUndefined();
-            expect(findColor([1,2,2,2])).toBeUndefined();
+        it('can find color object by name', function () {
+            var blueviolet = {'name':'blueviolet', 'value' : [138,43,226]};
+            expect(findColor('blueviolet')).toBeNull();
+            expect(findColor('blueviolet', true)).toEqual(blueviolet);
+        });
+
+        it('returns undefined if input given is not array of color components and not color name', function () {
+            expect(findColor()).toBeNull();
+            expect(findColor('')).toBeNull();
+            expect(findColor('blah-blah')).toBeNull();
+            expect(findColor(1)).toBeNull();
+            expect(findColor([])).toBeNull();
+            expect(findColor({})).toBeNull();
+            expect(findColor([1])).toBeNull();
+            expect(findColor([1,2])).toBeNull();
+            expect(findColor([1,2,2,2])).toBeNull();
         });
     });
 
