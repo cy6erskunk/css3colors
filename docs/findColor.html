@@ -404,18 +404,19 @@ findColor (color, extended)</p>
               <h2><code>FC.find</code></h2>
 <p>Finds closest to the given color from color array</p>
 <ul>
-<li>@param  {Array} color 3 decimal componets of color array</li>
-<li>@param  {Array} colors Array of 3 decimal componenets of color</li>
-<li>@return {Array} [R decimal, G decimal, B decimal]</li>
+<li>@param   {Array} color 3 decimal componets of color array</li>
+<li>@param   {Array} colors Array of 3 decimal componenets of color</li>
+<li>@returns {Object|Array|null} color object</li>
 </ul>
 
             </div>
             
             <div class="content"><div class="highlight"><pre>FC.find = <span class="function"><span class="keyword">function</span> <span class="params">(color, colors)</span> {</span>
-    <span class="keyword">return</span> (colors.reduce(<span class="keyword">function</span>(prevVal, curVal) {
+    <span class="keyword">var</span> result = (colors.reduce(<span class="keyword">function</span>(prevVal, curVal) {
         <span class="keyword">var</span> curDist = FC.distance(color, curVal.value);
         <span class="keyword">return</span> curDist &lt; prevVal.distance ? {<span class="string">'distance'</span>:curDist, <span class="string">'o'</span> : curVal} : prevVal;
     }, {<span class="string">'distance'</span>: <span class="literal">Infinity</span>, <span class="string">'o'</span>: <span class="literal">null</span>})).o;
+    <span class="keyword">return</span> result ? result : <span class="literal">null</span>;
 };</pre></div></div>
             
         </li>
@@ -427,20 +428,21 @@ findColor (color, extended)</p>
               <div class="pilwrap for-h2">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <h2><code>FC.findColor</code></h2>
-<p>Searches for closest color in CSS1 or CSS3 color list.</p>
+              <h2><code>FC.findByName</code></h2>
+<p>Finds color with given color name  in color array</p>
 <ul>
-<li>@param  {array} color - RGB components</li>
-<li>@param  {boolean} extended - use CSS1 (false, default) or CSS3</li>
-<li>@return {object} - described in module definition</li>
+<li>@param   {String} colorName</li>
+<li>@param   {Array} colors Array of 3 decimal componenets of color</li>
+<li>@returns {Object|null} color object</li>
 </ul>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>FC.findColor = <span class="function"><span class="keyword">function</span> <span class="params">(color, extended)</span> {</span>
-    <span class="keyword">if</span> (color &amp;&amp; Object.prototype.toString.call(color) === <span class="string">'[object Array]'</span> &amp;&amp; color.length === <span class="number">3</span>) {
-        <span class="keyword">return</span> extended ? FC.find(color, FC.extendedColors) : FC.find(color, FC.basicColors);
-    }
+            <div class="content"><div class="highlight"><pre>FC.findByName = <span class="function"><span class="keyword">function</span> <span class="params">(colorName, colors)</span> {</span>
+    <span class="keyword">var</span> result = colors.filter(<span class="function"><span class="keyword">function</span> <span class="params">(elem)</span> {</span>
+        <span class="keyword">return</span> elem.name === colorName.toLowerCase();
+    });
+    <span class="keyword">return</span> (result.length === <span class="number">1</span>) ? result[<span class="number">0</span>] : <span class="literal">null</span>;
 };</pre></div></div>
             
         </li>
@@ -451,6 +453,34 @@ findColor (color, extended)</p>
               
               <div class="pilwrap for-h2">
                 <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h2><code>FC.findColor</code></h2>
+<p>Searches for closest color in CSS1 or CSS3 color list.</p>
+<ul>
+<li>@param  {array} color - RGB components</li>
+<li>@param  {boolean} extended - use CSS1 (false, default) or CSS3</li>
+<li>@return {object|null} - described in module definition</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>FC.findColor = <span class="function"><span class="keyword">function</span> <span class="params">(color, extended)</span> {</span>
+    <span class="keyword">if</span> (color &amp;&amp; Object.prototype.toString.call(color) === <span class="string">'[object Array]'</span> &amp;&amp; color.length === <span class="number">3</span>) {
+        <span class="keyword">return</span> extended ? FC.find(color, FC.extendedColors) : FC.find(color, FC.basicColors);
+    } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> color === <span class="string">'string'</span>) {
+        <span class="keyword">return</span> extended ?  FC.findByName(color, FC.extendedColors) : FC.findByName(color, FC.basicColors);
+    }
+    <span class="keyword">return</span> <span class="literal">null</span>;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <h2>Bind <code>findColor</code> to global object</h2>
 <p>In Node environment everything is private, except to exported objexts</p>
@@ -463,11 +493,11 @@ findColor (color, extended)</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>In browser environment this code should be wrapped
 with closure otherwise <code>FC</code> object will leak to to <code>window</code></p>
