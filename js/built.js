@@ -29,8 +29,8 @@
                     css3ColorObj.strValue = JSON.stringify(css3ColorObj.value);
                     css3ColorObj.rgbValue = arr2rgb(css3ColorObj.value);
 
-                    nameElem[0].innerHTML = css3ColorObj.name;
-                    valueElem[0].innerHTML = css3ColorObj.strValue;
+                    nameElem.html(css3ColorObj.name);
+                    valueElem.html(css3ColorObj.strValue);
 
                     allText.css('color', arr2rgb(invertColor(css3ColorObj.value)));
 
@@ -59,7 +59,7 @@
         },
         processBlur = function () {
             if (!this.value) {
-                this.value = nameElem[0].innerHTML;
+                this.value = nameElem.html();
                 processInput.call(this);
             }
         },
@@ -83,7 +83,7 @@
                 initial.push(Math.ceil(Math.random() * 256));
             }
 
-            input[0].value = '[' + initial.toString() + ']';
+            input.val('[' + initial.toString() + ']');
             processInput.call(input[0]);
 
             input[0].addEventListener('input', processInput);
