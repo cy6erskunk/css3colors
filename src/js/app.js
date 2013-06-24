@@ -21,7 +21,7 @@
                 css3ColorObj;
 
             if (typeof userColor === 'string' || isArray(userColor) && userColor.length === 3) {
-                css3ColorObj = findColor(userColor,1);
+                css3ColorObj = findColor(userColor, 1);
                 if (css3ColorObj) {
                     // @TODO fix this tricky logic
                     customColorElem[0].className = 'customColor'; // @TODO refactor
@@ -80,7 +80,7 @@
                 initial = [];
 
             for (; i < 3; i++) {
-                initial.push(Math.ceil(Math.random() * 256));
+                initial.push(Math.floor(Math.random() * 256));
             }
 
             input.val('[' + initial.toString() + ']');
