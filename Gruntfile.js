@@ -96,10 +96,16 @@ module.exports = function (grunt) {
                     'js/built.min.js': ['js/modules.js', 'js/built.js']
                 }
             }
+        },
+        open: {
+            dist: {
+                path: 'http://localhost:9001'
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-regarde');
+    grunt.loadNpmTasks('grunt-open');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-livereload');
     grunt.loadNpmTasks('grunt-contrib-stylus');
@@ -111,6 +117,6 @@ module.exports = function (grunt) {
     grunt.registerTask('css', 'stylus');
     grunt.registerTask('test', ['jasmine']);
     grunt.registerTask('js', ['concat', 'uglify']);
-    grunt.registerTask('default',  ['livereload-start', 'connect', 'regarde']);
+    grunt.registerTask('default',  ['livereload-start', 'connect', 'open', 'regarde']);
 
 };
