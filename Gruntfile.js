@@ -7,6 +7,9 @@ var folderMount = function folderMount(connect, point) {
 };
 
 module.exports = function (grunt) {
+
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
     grunt.initConfig({
         connect: {
             livereload: {
@@ -103,16 +106,6 @@ module.exports = function (grunt) {
             }
         }
     });
-
-    grunt.loadNpmTasks('grunt-regarde');
-    grunt.loadNpmTasks('grunt-open');
-    grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-contrib-livereload');
-    grunt.loadNpmTasks('grunt-contrib-stylus');
-    grunt.loadNpmTasks('grunt-contrib-jasmine');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     grunt.registerTask('css', 'stylus');
     grunt.registerTask('test', ['jasmine']);
