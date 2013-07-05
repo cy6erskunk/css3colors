@@ -16,7 +16,7 @@ module.exports = function (grunt) {
                 options: {
                     port: 9001,
                     middleware: function(connect) {
-                        return [lrSnippet, folderMount(connect, '.')];
+                        return [lrSnippet, folderMount(connect, 'dist/')];
                     }
                 }
             }
@@ -44,10 +44,10 @@ module.exports = function (grunt) {
             compile: {
                 options: {
                     compress: false,
-                    import: [ 'src/css/import/common.styl']
+                    import: [ 'import/common']
                 },
                 files: {
-                    'css/main.css': ['src/css/main.styl']
+                    'dist/css/main.css': ['src/css/main.styl']
                 }
             }
         },
@@ -78,14 +78,14 @@ module.exports = function (grunt) {
                     separator: ''
                 },
                 src: ['src/js/modules-intro.js','src/js/modules/findColor.js', 'src/js/modules-outro.js'],
-                dest: 'js/modules.js'
+                dest: 'dist/js/modules.js'
             },
             app: {
                 options: {
                     separator: ';'
                 },
                 src: ['src/js/app.js'],
-                dest: 'js/built.js'
+                dest: 'dist/js/built.js'
             }
         },
         uglify: {
@@ -96,7 +96,7 @@ module.exports = function (grunt) {
             },
             my_target: {
                 files: {
-                    'js/built.min.js': ['js/modules.js', 'js/built.js']
+                    'dist/js/built.min.js': ['dist/js/modules.js', 'dist/js/built.js']
                 }
             }
         },
@@ -104,12 +104,40 @@ module.exports = function (grunt) {
             dist: {
                 path: 'http://localhost:9001'
             }
+        },
+        // Move files not handled by other tasks
+        copy: {
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '.',
+                    dest: 'dist',
+                    src: [
+                        'index.html',
+                        'vendor/**.js',
+                        'docs/**'
+                    ]
+                }]
+            }
+        },
+        clean: {
+            dist: 'dist'
+        },
+        'gh-pages': {
+            options: {
+                base: 'dist',
+                push: true
+            },
+            src: ['*.html', 'vendor/*.js', 'docs/**', 'css/**', 'js/**']
         }
     });
 
-    grunt.registerTask('css', 'stylus');
     grunt.registerTask('test', ['jasmine']);
+    grunt.registerTask('css', 'stylus');
     grunt.registerTask('js', ['concat', 'uglify']);
-    grunt.registerTask('default',  ['livereload-start', 'connect', 'open', 'regarde']);
+    grunt.registerTask('build', ['css', 'js', 'copy']);
+    grunt.registerTask('default',  ['build', 'livereload-start', 'connect', 'open', 'regarde']);
+    grunt.registerTask('publish', ['build', 'gh-pages']);
 
 };
