@@ -8,6 +8,23 @@ var folderMount = function folderMount(connect, point) {
 
 module.exports = function (grunt) {
 
+    // reads file, strips out single line comments and tries to parse JSON
+    // based on grunt.file.readJSON function
+    var readJSONwithComments = function (filepath, options) {
+        var src = grunt.file.read(filepath, options);
+        src = src.replace(/^ *\/\/.*$/gm, '');
+        var result;
+        grunt.verbose.write('Parsing ' + filepath + '...');
+        try {
+            result = JSON.parse(src);
+            grunt.verbose.ok();
+            return result;
+        } catch(e) {
+            grunt.verbose.error();
+            throw grunt.util.error('Unable to parse "' + filepath + '" file (' + e.message + ').', e);
+        }
+    };
+
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
     grunt.initConfig({
@@ -71,9 +88,7 @@ module.exports = function (grunt) {
         },
         jshint: {
             all: {
-                options : {
-                    jshintrc: '.jshintrc'
-                },
+                options : readJSONwithComments('.jshintrc'),
                 src: ['Gruntfile.js', 'src/js/app.js', 'src/js/modules/*.js']
             }
         },
