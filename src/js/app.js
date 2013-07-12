@@ -1,5 +1,5 @@
-/* global findColor:false,$:false*/
-(function() {
+/* global findColor:false, $:false*/
+(function () {
     window.$ = window.domey;
     var input = $('input.input'),
         nameElem = $('.colorName'),
@@ -68,9 +68,7 @@
             if (isArray(a) && a.length === 3) {
                 a.forEach(function (v) {
                     // slightly darken value too close to 127
-                    Math.abs(v - 127) < 10 ?
-                        res.push(235 - v) :
-                        res.push(255 - v);
+                    res.push((Math.abs(v - 127) < 10 ? 235 : 255) - v);
                 });
             }
             return res;

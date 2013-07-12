@@ -23,7 +23,7 @@ module.exports = function (grunt) {
         },
         // Configuration to be run (and then tested)
         regarde: {
-            fred: {
+            livereload: {
                 files: ['*.html', 'css/*.css', 'js/*.js'],
                 tasks: ['livereload']
             },
@@ -31,11 +31,11 @@ module.exports = function (grunt) {
                 files: 'src/css/*.styl',
                 tasks: ['css']
             },
-            bob: {
+            js_modules: {
                 files: 'src/js/modules/*.js',
                 tasks: ['concat:modules', 'uglify']
             },
-            mary: {
+            js_app: {
                 files: 'src/js/app.js',
                 tasks: ['concat:app', 'uglify']
             }
@@ -70,7 +70,12 @@ module.exports = function (grunt) {
             }
         },
         jshint: {
-            all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
+            all: {
+                options : {
+                    jshintrc: '.jshintrc'
+                },
+                src: ['Gruntfile.js', 'src/js/app.js', 'src/js/modules/*.js']
+            }
         },
         concat: {
             modules: {
@@ -137,7 +142,7 @@ module.exports = function (grunt) {
     grunt.registerTask('css', 'stylus');
     grunt.registerTask('js', ['concat', 'uglify']);
     grunt.registerTask('build', ['css', 'js', 'copy']);
-    grunt.registerTask('default',  ['build', 'livereload-start', 'connect', 'open', 'regarde']);
+    grunt.registerTask('default',  ['jshint', 'build', 'livereload-start', 'connect', 'open', 'regarde']);
     grunt.registerTask('publish', ['build', 'gh-pages']);
 
 };
