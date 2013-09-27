@@ -1,10 +1,5 @@
 /*global require:false, module:false*/
-var path = require('path');
-var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
-
-var folderMount = function folderMount(connect, point) {
-    return connect.static(path.resolve(point));
-};
+var port = 9001;
 
 module.exports = function (grunt) {
 
@@ -29,20 +24,19 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         connect: {
-            livereload: {
+            app: {
                 options: {
-                    port: 9001,
-                    middleware: function(connect) {
-                        return [lrSnippet, folderMount(connect, 'dist/')];
-                    }
+                    port: port,
+                    livereload: true,
+                    base: 'dist',
+                    debug: true,
+                    open: true
                 }
             }
         },
-        // Configuration to be run (and then tested)
-        regarde: {
-            livereload: {
-                files: ['*.html', 'css/*.css', 'js/*.js'],
-                tasks: ['livereload']
+        watch: {
+            options: {
+                livereload: true
             },
             stylus: {
                 files: 'src/css/*.styl',
@@ -65,15 +59,6 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'dist/css/main.css': ['src/css/main.styl']
-                }
-            }
-        },
-        watch: {
-            styles: {
-                files: 'src/css/*.styl',
-                tasks: ['css'],
-                options: {
-                    interrupt: true
                 }
             }
         },
@@ -120,11 +105,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        open: {
-            dist: {
-                path: 'http://localhost:9001'
-            }
-        },
         // Move files not handled by other tasks
         copy: {
             dist: {
@@ -157,7 +137,7 @@ module.exports = function (grunt) {
     grunt.registerTask('css', 'stylus');
     grunt.registerTask('js', ['concat', 'uglify']);
     grunt.registerTask('build', ['css', 'js', 'copy']);
-    grunt.registerTask('default',  ['jshint', 'build', 'livereload-start', 'connect', 'open', 'regarde']);
+    grunt.registerTask('default',  ['jshint', 'build', 'connect', 'watch']);
     grunt.registerTask('publish', ['build', 'gh-pages']);
 
 };
