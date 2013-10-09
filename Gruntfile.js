@@ -122,7 +122,7 @@ module.exports = function (grunt) {
             }
         },
         clean: {
-            dist: 'dist'
+            all: ['dist', 'coverage']
         },
         'gh-pages': {
             options: {

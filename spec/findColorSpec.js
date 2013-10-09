@@ -27,6 +27,7 @@ describe('findColor', function () {
             expect(findColor([1])).toBeNull();
             expect(findColor([1,2])).toBeNull();
             expect(findColor([1,2,2,2])).toBeNull();
+            expect(findColor([1,2,'z'])).toBeNull();
         });
     });
 
